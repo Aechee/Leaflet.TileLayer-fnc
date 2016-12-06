@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Demo Leaflet.TileLayer-fnc</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.css">
+		<style>
+body {
+	margin: 0;
+	padding: 0;
+	position: absolute; top: 0; bottom: 0; width: 100%;
+}
+</style>
+	</head>
+	<body><!-- map container -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.js"></script>
+		<script src="leaflet.tilelayer-fix.js"></script>
+		<script src="leaflet.tilelayer-fnc.js"></script>
+		<script>
+var map = L.map(document.body, {
+	center: [50, 5], // Ardennes, BE
+//	zoom: 5, // fitBounds
+	layers: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '<a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+	}),
+	minZoom: 2
+});
+
+var overlay = L.tileLayer(function (data) {
+	// http://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.1.1&SERVICE=WMS
+
+	var base = 'http://geo4.service24.rlp.de/wms/dop_basis.fcgi';
+
+	var wmsParams = {
+//		service: 'WMS', // not in spec
+		version: '1.1.1',
+		request: 'GetMap',
+//		layers: data.z < 11 ? 'rp_dop_metadaten' : 'rp_dop', // !
+		layers: Math.random() < 0.5 ? 'rp_dop_metadaten' : 'rp_dop', // !
+		styles: '',
+//		crs: data.crs, // WMS 1.3
+		srs: data.crs, // WMS < 1.3
+		bbox: data.bbox,
+		width: data.width,
+		height: data.height,
+		format: 'image/png',
+		transparent: true
+	};
+
+	return base + L.Util.getParamString(wmsParams, base);
+}, {
+	minZoom: 8,
+	bounds: [[48.898, 6.03777], [51.0009, 8.6177]],
+	tileSize: L.point(256, 128),
+	attribution: '<a href="http://www.lvermgeo.rlp.de">GeoBasis-DE / LVermGeoRP, dl-de/by-2-0</a>'
+}).addTo(map);
+
+map.fitBounds(overlay.options.bounds);
+</script>
+	</body>
+</html>
