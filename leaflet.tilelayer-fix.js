@@ -107,8 +107,9 @@ L.TileLayer.WMS.include({
 		}
 
 		L.GridLayer.prototype.initialize.call(this, options);
+		options = this.options;
 
-		tileSize = this.options.tileSize;
+		tileSize = options.tileSize;
 		if (options.detectRetina && L.Browser.retina) {
 			tileSize = tileSize.multiplyBy(2);
 		}
