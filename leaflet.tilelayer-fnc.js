@@ -17,7 +17,7 @@ L.TileLayer.include({
 			y: coords.y,
 			z: this._getZoomForUrl()
 		};
-		if (this._map && !this._map.options.crs.infinite) {
+		if (!crs.infinite) {
 			var invertedY = this._globalTileRange.max.y - coords.y;
 			if (this.options.tms) {
 				data['y'] = invertedY;
