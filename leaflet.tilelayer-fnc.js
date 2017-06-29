@@ -101,8 +101,8 @@ L.TileLayer.getUrlWmts = function (base, options) {
 	};
 };
 
-/* L.Util helper method */
+/* utility/helper method */
 
-L.Util.getUrl = function (base, params, uppercase) {
+L.getUrl = function (base, params, uppercase) {
 	return base + L.Util.getParamString(params, base, uppercase);
 };
