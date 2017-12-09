@@ -68,26 +68,6 @@ L.TileLayer.include({
 		if (!L.Browser.android) {
 			this.on('tileunload', this._onTileRemove);
 		}
-	},
-
-	getTileSize: function () {
-		var map = this._map,
-		    tileSize = this.options.tileSize,
-		    zoom = this._tileZoom + this.options.zoomOffset,
-		    minNativeZoom = this.options.minNativeZoom,
-		    maxNativeZoom = this.options.maxNativeZoom;
-
-		// decrease tile size when scaling below minNativeZoom
-		if (minNativeZoom !== null && zoom < minNativeZoom) {
-			return tileSize.divideBy(map.getZoomScale(minNativeZoom, zoom))._round();
-		}
-
-		// increase tile size when scaling above maxNativeZoom
-		if (maxNativeZoom !== null && zoom > maxNativeZoom) {
-			return tileSize.divideBy(map.getZoomScale(maxNativeZoom, zoom))._round();
-		}
-
-		return tileSize;
 	}
 });
 
@@ -107,10 +87,9 @@ L.TileLayer.WMS.include({
 		}
 
 		L.GridLayer.prototype.initialize.call(this, options);
-		options = this.options;
 
-		tileSize = options.tileSize;
-		if (options.detectRetina && L.Browser.retina) {
+		tileSize = this.getTileSize();
+		if (this.options.detectRetina && L.Browser.retina) {
 			tileSize = tileSize.multiplyBy(2);
 		}
 		wmsParams.width  = tileSize.x;
