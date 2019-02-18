@@ -75,6 +75,7 @@ L.TileLayer.getUrlWms = function (base, options) {
 };
 
 L.TileLayer.getUrlWmts = function (base, options) {
+	var tileMatrixPrefix = options.tileMatrixPrefix || '';
 	var wmtsParams;
 
 	return function (data, tileLayer) {
@@ -93,7 +94,7 @@ L.TileLayer.getUrlWmts = function (base, options) {
 			tileCol: undefined // placeholder
 		};
 
-		wmtsParams.tileMatrix = (options.tileMatrix || options.tileMatrixSet + ':') + data.z;
+		wmtsParams.tileMatrix = tileMatrixPrefix + data.z;
 		wmtsParams.tileRow = data.y;
 		wmtsParams.tileCol = data.x;
 
