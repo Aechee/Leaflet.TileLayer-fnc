@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<title>Demo Leaflet.TileLayer-fnc</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
 		<style>
 body {
 	margin: 0;
@@ -14,14 +14,14 @@ body {
 </style>
 	</head>
 	<body><!-- map container -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
+		<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 		<script src="leaflet.tilelayer-fix.js"></script>
 		<script src="leaflet.tilelayer-fnc.js"></script>
 		<script>
 var map = L.map(document.body, {
 	center: [50, 5], // Ardennes, BE
 //	zoom: 5, // fitBounds
-	layers: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	layers: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: '<a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
 	}),
@@ -29,9 +29,9 @@ var map = L.map(document.body, {
 });
 
 var overlay = L.tileLayer(function (data) {
-	// http://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.1.1&SERVICE=WMS
+	// https://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.1.1&SERVICE=WMS
 
-	var base = 'http://geo4.service24.rlp.de/wms/dop_basis.fcgi';
+	var base = 'https://geo4.service24.rlp.de/wms/dop_basis.fcgi';
 
 	var wmsParams = {
 //		service: 'WMS', // not in spec
@@ -54,7 +54,7 @@ var overlay = L.tileLayer(function (data) {
 	minZoom: 8,
 	bounds: [[48.898, 6.03777], [51.0009, 8.6177]],
 	tileSize: L.point(256, 128),
-	attribution: '<a href="http://www.lvermgeo.rlp.de">GeoBasis-DE / LVermGeoRP, dl-de/by-2-0</a>'
+	attribution: '<a href="https://lvermgeo.rlp.de">GeoBasis-DE / LVermGeoRP, dl-de/by-2-0</a>'
 }).addTo(map);
 
 map.fitBounds(overlay.options.bounds);

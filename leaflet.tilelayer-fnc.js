@@ -2,46 +2,77 @@
  * leaflet.tilelayer-fnc.js
  */
 
-L.TileLayer.include({
-	getTileUrl: function (coords) {
-		var tileBounds = this._tileCoordsToBounds(coords);
-		var crs = this._map.options.crs;
-		var nw = crs.project(tileBounds.getNorthWest());
-		var se = crs.project(tileBounds.getSouthEast());
-		var tileSize = this.options.tileSize;
+(function () {
+	var initialize = L.TileLayer.prototype.initialize;
+	var onAdd = L.TileLayer.prototype.onAdd;
 
-		var data = {
+	L.TileLayer.prototype.initialize = function (url, options) {
+
+		this._urlData = {
 			r: L.Browser.retina ? '@2x' : '',
-			s: this._getSubdomain(coords),
-			x: coords.x,
-			y: coords.y,
-			z: this._getZoomForUrl()
+			// placeholders
+			s: undefined,
+			x: undefined,
+			y: undefined,
+			z: undefined,
+
+			crs: undefined,
+			bbox: undefined,
+			width: undefined,
+			height: undefined
 		};
-		if (!crs.infinite) {
-			var invertedY = this._globalTileRange.max.y - coords.y;
-			if (this.options.tms) {
-				data['y'] = invertedY;
+
+		// append unknown options to _urlData
+		for (key in options) {
+			if (!(key in this.options)) {
+				this._urlData[key] = options[key];
 			}
-			data['-y'] = invertedY;
 		}
 
-		// WMS, ArcGIS ExportImage
-		if (this.options.detectRetina && L.Browser.retina) {
-			tileSize = tileSize.multiplyBy(2);
-		}
-		L.extend(data, {
-			crs: crs.code,
-			bbox: [nw.x, se.y, se.x, nw.y].join(','), // xmin,ymin,xmax,ymax
-			width: tileSize.x,
-			height: tileSize.y
-		});
+		initialize.call(this, url, options);
+	};
 
-		if (typeof this._url === 'function') {
-			return this._url(data, this);
+	L.TileLayer.prototype.onAdd = function (map) {
+		this._urlData.crs = map.options.crs.code;
+
+		onAdd.call(this, map);
+	};
+})();
+
+L.TileLayer.prototype.getTileUrl = function (coords) {
+	var tileBounds = this._tileCoordsToBounds(coords);
+	var crs = this._map.options.crs;
+	var nw = crs.project(tileBounds.getNorthWest());
+	var se = crs.project(tileBounds.getSouthEast());
+	var tileSize = this.options.tileSize;
+
+	var data = this._urlData;
+	data.s = this._getSubdomain(coords);
+	data.x = coords.x;
+	data.y = coords.y;
+	data.z = this._getZoomForUrl();
+
+	if (!crs.infinite) {
+		var invertedY = this._globalTileRange.max.y - coords.y;
+		if (this.options.tms) {
+			data['y'] = invertedY;
 		}
-		return L.Util.template(this._url, L.extend(data, this.options));
-	},
-});
+		data['-y'] = invertedY;
+	}
+
+	// WMS, ArcGIS ExportImage
+	if (this.options.detectRetina && L.Browser.retina) {
+		tileSize = tileSize.multiplyBy(2);
+	}
+	data.bbox = [nw.x, se.y, se.x, nw.y].join(','); // xmin,ymin,xmax,ymax
+	data.width = tileSize.x;
+	data.height = tileSize.y;
+
+	if (typeof this._url === 'function') {
+		return this._url(data, this);
+	}
+	return L.Util.template(this._url, data);
+};
 
 /* static getUrl function factories */
 
