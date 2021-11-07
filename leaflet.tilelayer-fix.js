@@ -6,16 +6,14 @@
 
 L.GridLayer.include({
 	initialize: function (options) {
-		var option;
-
 		options = L.setOptions(this, options);
 
 		// normalize options
-		option = options.tileSize;
-		options.tileSize = (typeof option === 'number') ? new L.Point(option, option) : L.point(option); // Point
+		var tileSize = options.tileSize;
+		options.tileSize = (typeof tileSize === 'number') ? new L.Point(tileSize, tileSize) : L.point(tileSize); // Point
 
-		option = options.bounds;
-		options.bounds = option ? L.latLngBounds(option) : option; // LatLngBounds|null
+		var bounds = options.bounds;
+		options.bounds = bounds ? L.latLngBounds(bounds) : bounds; // LatLngBounds|null
 	},
 
 	getTileSize: function () {
@@ -58,23 +56,20 @@ L.TileLayer.include({
 				options.zoomOffset--;
 				options.minZoom++;
 			}
+
+			options.minZoom = Math.max(0, options.minZoom);
 		}
 
 		if (typeof options.subdomains === 'string') {
 			options.subdomains = options.subdomains.split('');
 		}
 
-		// for https://github.com/Leaflet/Leaflet/issues/137
-		if (!L.Browser.android) {
-			this.on('tileunload', this._onTileRemove);
-		}
+		this.on('tileunload', this._onTileRemove);
 	}
 });
 
 L.TileLayer.WMS.include({
 	initialize: function (url, options) {
-		var tileSize;
-
 		this._url = url;
 
 		var wmsParams = L.extend({}, this.defaultWmsParams);
@@ -88,12 +83,10 @@ L.TileLayer.WMS.include({
 
 		L.GridLayer.prototype.initialize.call(this, options);
 
-		tileSize = this.getTileSize();
-		if (this.options.detectRetina && L.Browser.retina) {
-			tileSize = tileSize.multiplyBy(2);
-		}
-		wmsParams.width  = tileSize.x;
-		wmsParams.height = tileSize.y;
+		var realRetina = options.detectRetina && L.Browser.retina ? 2 : 1;
+		var tileSize = this.getTileSize();
+		wmsParams.width = tileSize.x * realRetina;
+		wmsParams.height = tileSize.y * realRetina;
 
 		this.wmsParams = wmsParams;
 	}

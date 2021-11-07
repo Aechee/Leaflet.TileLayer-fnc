@@ -29,19 +29,19 @@ var map = L.map(document.body, {
 });
 
 var overlay = L.tileLayer(function (data) {
-	// https://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.1.1&SERVICE=WMS
+	// https://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.3.0&SERVICE=WMS
 
 	var base = 'https://geo4.service24.rlp.de/wms/dop_basis.fcgi';
 
 	var wmsParams = {
 //		service: 'WMS', // not in spec
-		version: '1.1.1',
+		version: '1.3.0',
 		request: 'GetMap',
 //		layers: data.z < 11 ? 'rp_dop_metadaten' : 'rp_dop', // !
 		layers: Math.random() < 0.5 ? 'rp_dop_metadaten' : 'rp_dop', // !
 		styles: '',
-//		crs: data.crs, // WMS 1.3
-		srs: data.crs, // WMS < 1.3
+		crs: data.crs, // WMS 1.3
+//		srs: data.crs, // WMS < 1.3
 		bbox: data.bbox,
 		width: data.width,
 		height: data.height,
