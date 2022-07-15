@@ -1,65 +1,25 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Demo Leaflet.TileLayer-fnc</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css">
-		<style>
-html,
-body,
-#mapContainer {
-	height: 100%;
-	margin: 0;
-	padding: 0;
-}
+<head>
+	<title>Demo Leaflet.TileLayer-fnc</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css">
+	<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+	<script src="leaflet.tilelayer-fnc.js"></script>
+	
+</head>
+<style>
+	html,
+	body,
+	#mapContainer {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	}
 </style>
-		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
-		<!--script src="leaflet.tilelayer-fix.js"></script-->
-		<script src="leaflet.tilelayer-fnc.js"></script>
-	</head>
-		<div id="mapContainer"></div>
-		<script>
-const map = L.map('mapContainer', {
-	center: [50, 5], // Ardennes, BE
-//	zoom: 5, // fitBounds
-	layers: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
-		attribution: '<a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-	}),
-	minZoom: 2
-});
+<div id="mapContainer"></div>
 
-const overlay = L.tileLayer(function (data) {
-	// https://geo4.service24.rlp.de/wms/dop_basis.fcgi?REQUEST=GetCapabilities&VERSION=1.3.0&SERVICE=WMS
 
-	const base = 'https://geo4.service24.rlp.de/wms/dop_basis.fcgi';
+<script src="code.js"></script>
 
-	const wmsParams = {
-//		service: 'WMS', // not in spec
-		version: '1.3.0',
-		request: 'GetMap',
-//		layers: data.z < 11 ? 'rp_dop_metadaten' : 'rp_dop', // !
-		layers: Math.random() < 0.5 ? 'rp_dop_metadaten' : 'rp_dop', // !
-		styles: '',
-		crs: data.crs, // WMS 1.3
-//		srs: data.crs, // WMS < 1.3
-		bbox: data.bbox,
-		width: data.width,
-		height: data.height,
-		format: 'image/png',
-		transparent: true
-	};
-
-	return base + L.Util.getParamString(wmsParams, base);
-}, {
-	minZoom: 8,
-	bounds: [[48.898, 6.03777], [51.0009, 8.6177]],
-	tileSize: L.point(256, 128), // !
-	attribution: '<a href="https://lvermgeo.rlp.de">GeoBasis-DE / LVermGeoRP, dl-de/by-2-0</a>'
-}).addTo(map);
-
-map.fitBounds(L.latLngBounds(overlay.options.bounds));
-</script>
-	</body>
-</html>
+</body>
